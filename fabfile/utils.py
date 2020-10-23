@@ -40,7 +40,11 @@ import random
 from retrying import Retrying, RetryError
 import string
 from threading import Thread
-from cStringIO import StringIO
+try:
+    from StringIO import StringIO ## for Python 2
+except ImportError:
+    from io import StringIO ## for Python 3
+
 import time
 import datetime
 import semver
@@ -59,6 +63,9 @@ from fabtools import require
 from fabtools.require.files import temporary_directory
 from fabtools.utils import run_as_root
 
+import sys
+if sys.version_info[0] == 3:
+    basestring = str
 
 # thanks
 # http://freepythontips.wordpress.com/2013/07/28/generating-a-random-string/
@@ -109,9 +116,9 @@ def compute_instance_status(instance):
 
     the check that we check the existence of the base dir
     """
-    print instance.base_ed_dir
+    print(instance.base_ed_dir)
     instance.first_deploy = not exists(instance.base_ed_dir)
-    print "instance {i} is {s}".format(i=instance.name, s='new' if instance.first_deploy else 'not new')
+    print("instance {i} is {s}".format(i=instance.name, s='new' if instance.first_deploy else 'not new'))
 
 
 def require_directory(dirs, is_on_nfs4=False, **kwargs):
@@ -121,7 +128,7 @@ def require_directory(dirs, is_on_nfs4=False, **kwargs):
     if the directory is on nfs4 (and the environement supports it) we do not chown the directory,
     access right are handled externaly via acl
     """
-    print "creating directory {}".format(dirs)
+    print("creating directory {}".format(dirs))
     if env.use_nfs4 and is_on_nfs4:
         print('removing chown')
         if 'owner' in kwargs:
@@ -168,9 +175,11 @@ def _upload_template(filename, destination, context=None, chown=True, user='www-
 
 
 def get_psql_version():
+    # "psql (PostgreSQL) 10.14 (Ubuntu 10.14-0ubuntu0.18.04.1)"
     version_lines = run('psql --version')
-    v_line = version_lines.split('\n')[0]
-    return v_line.split(" ")[-1].split(".")
+    # 10.14
+    v_line = version_lines.split('\n')[0].split(" ")[2].split(".")
+    return [int(i) for i in v_line]
 
 
 def get_host_addr(host):

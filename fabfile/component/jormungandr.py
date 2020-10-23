@@ -36,7 +36,10 @@ import requests
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import ConnectionError
 from simplejson.scanner import JSONDecodeError
-from urllib2 import HTTPError
+try:
+    from urllib2 import HTTPError ## for Python 2
+except ImportError:
+    from urllib.error import HTTPError ## for Python 3
 
 from fabric.colors import red, green, blue, yellow
 from fabric.context_managers import settings
@@ -113,6 +116,9 @@ def upgrade_ws_packages():
         packages.append('libgeos-3.4.2')
     elif env.distrib == 'debian7':
         packages.append('libzmq-dev')
+    if env.distrib in ('debian10', ):
+        packages.append('libgeos-3.7.1')
+        packages.append('libzmq3-dev')
 
     require.deb.packages(packages)
     package_filter_list = ['navitia-jormungandr*deb',
@@ -173,7 +179,9 @@ def start_jormungandr_all():
 @task
 @roles('ws')
 def start_services():
+    print("start_or_stop_with_delay apache2")
     start_or_stop_with_delay('apache2', env.APACHE_START_DELAY * 1000, 500, only_once=env.APACHE_START_ONLY_ONCE)
+    print("finish start_or_stop_with_delay apache2")
 
 
 @task
@@ -306,12 +314,12 @@ def test_jormungandr(server, instance=None, fail_if_error=True):
         active_instance = [i for i in env.instances.keys() if i not in env.excluded_instances]
 
         if len(regions) != len(active_instance):
-            print red("there is not the right number of instances, "
+            print(red("there is not the right number of instances, "
                       "we should have {ref} but we got {real} instances".
-                      format(ref=len(active_instance), real=len(regions)))
+                      format(ref=len(active_instance), real=len(regions))))
 
-            print red('instances in diff: {}'.format(
-                set(active_instance).symmetric_difference(set([i['id'] for i in regions]))))
+            print(red('instances in diff: {}'.format(
+                set(active_instance).symmetric_difference(set([i['id'] for i in regions])))))
 
             if fail_if_error:
                 exit(1)
@@ -322,13 +330,13 @@ def test_jormungandr(server, instance=None, fail_if_error=True):
             statuses = [(region['id'], region['status']) for region in regions]
 
             if all(map(lambda p: p[1] == 'running', statuses)):
-                print green('all instances are ok, everything is fine')
+                print(green('all instances are ok, everything is fine'))
                 return True
 
-            print blue('running instances: {}'.format(
+            print(blue('running instances: {}'.format(
                 [status[0] for status in statuses if status[1] == 'running']
-            ))
-            print red('KO instances: {}'.format([status for status in statuses if status[1] != 'running']))
+            )))
+            print(red('KO instances: {}'.format([status for status in statuses if status[1] != 'running'])))
 
             if fail_if_error:
                 exit(1)

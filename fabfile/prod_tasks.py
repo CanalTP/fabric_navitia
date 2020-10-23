@@ -32,7 +32,7 @@
 from fabric.colors import blue
 from fabric.tasks import execute
 from fabric.api import env, task
-from component import haproxy
+from fabfile.component import haproxy
 
 def vip_name(instance):
     """ Return kraken vip name based on our convention """

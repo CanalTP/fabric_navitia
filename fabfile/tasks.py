@@ -33,17 +33,18 @@ from fabric.api import env, task, execute, abort
 from fabric.colors import blue, red, yellow, green
 from fabric.context_managers import settings
 from fabric.contrib.files import exists
-from component import tyr, jormungandr, kraken, db, haproxy
-from component.load_balancer import _adc_connection
-from utils import (get_bool_from_cli, show_version, get_host_addr,
+from fabfile.component import tyr, jormungandr, kraken, db, haproxy
+from fabfile.component.load_balancer import _adc_connection
+from fabfile.utils import (get_bool_from_cli, show_version, get_host_addr,
                    show_dead_kraken_status, TimeCollector, compute_instance_status,
                    show_time_deploy, host_app_mapping, send_mail,
                    supervision_downtime, get_real_instance)
-from prod_tasks import (remove_kraken_vip, switch_to_first_phase, enable_kraken_haproxy,
+from fabfile.prod_tasks import (remove_kraken_vip, switch_to_first_phase, enable_kraken_haproxy,
                         switch_to_second_phase, switch_to_third_phase, enable_nodes)
+from fabfile import component
+
 import random
 import requests
-import component
 
 
 #############################################
@@ -248,7 +249,7 @@ def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=Fa
                          format(len(instances_failed))))
     time_dict.register_end('bina')
     if only_bina:
-        print show_time_deploy(time_dict)
+        print(show_time_deploy(time_dict))
         return None
     if check_bina and instances_failed:
         abort(red("\n  ERROR: {} binarisation(s) have failed.".format(len(instances_failed))))

@@ -32,8 +32,11 @@
 from importlib import import_module
 import re
 import os
+try:
+    from fabric.api import env
+except ImportError:
+    from fabric.state import env
 
-from fabric.api import env
 from fabric.colors import yellow
 from fabric.decorators import task
 from fabric.operations import run

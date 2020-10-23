@@ -35,9 +35,9 @@
 # pylint: disable=import-error
 import sys
 
-from env.platforms import *
-from tasks import *
-from custom_tasks import *
+from fabfile.env.platforms import *
+from fabfile.tasks import *
+from fabfile.custom_tasks import *
 
 # log fabric command line at start of fabric
 fab_comm = "Start Fabric command: <fab {}>".format(' '.join(sys.argv[1:]))

@@ -45,8 +45,8 @@ from fabric.tasks import execute
 
 # WARNING: the way fabric_navitia imports are done as a strong influence
 #          on the resulting naming of tasks, wich can break integration tests
-import component
-from utils import _upload_template, _random_generator, apt_get_update
+import fabfile.component
+from fabfile.utils import _upload_template, _random_generator, apt_get_update
 
 
 @task

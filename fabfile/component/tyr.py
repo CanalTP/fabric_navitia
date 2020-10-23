@@ -29,8 +29,16 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-import StringIO
-import ConfigParser
+try:
+    from StringIO import StringIO ## for Python 2
+except ImportError:
+    from io import StringIO ## for Python 3
+
+try:
+    import ConfigParser as configparser ## for Python 2
+except ImportError:
+    import configparser ## for Python 3
+
 from io import BytesIO
 import os
 from retrying import Retrying, RetryError
@@ -153,7 +161,7 @@ def upgrade_tyr_packages():
         packages += ['libpython2.7-dev']
     elif env.distrib == 'debian7':
         packages += ['python2.7-dev']
-    elif env.distrib == 'debian8':
+    elif env.distrib in ('debian8', 'debian10'):
         packages += ['python2.7-dev', 'g++']
     require.deb.packages(packages, update=True)
     package_filter_list = ['navitia-tyr*deb',
@@ -291,8 +299,8 @@ def stop_tyr_worker():
                 Retrying(stop_max_delay=4000, wait_fixed=1000,
                          retry_on_result=get_workers).call(lambda: None)
             except RetryError:
-                print red('Some workers are still alive: {}'.format(get_workers()))
-                print red("Aborting")
+                print(red('Some workers are still alive: {}'.format(get_workers())))
+                print(red("Aborting"))
                 exit(1)
 
 
@@ -397,7 +405,7 @@ def get_tyr_config(instance):
         print(red("ERROR: can't find %s" % config_path))
         exit(1)
 
-    config = ConfigParser.RawConfigParser(allow_no_value=True)
+    config = configparser.RawConfigParser(allow_no_value=True)
     config.readfp(BytesIO(temp_file.getvalue()))
 
     if 'instance' in config.sections():
@@ -772,7 +780,7 @@ def deploy_default_synonyms(instance):
     default_synonyms_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                          os.path.pardir, os.path.pardir,
                                          'static_files', 'ed', 'default_synonyms.txt')
-    print blue("copy default synonyms for {}".format(instance.name))
+    print(blue("copy default synonyms for {}".format(instance.name)))
 
     put(default_synonyms_file, instance.source_dir, use_sudo=True)
     sudo("chown {u} {f}".format(u=env.KRAKEN_USER, f=os.path.join(instance.source_dir, 'default_synonyms.txt')))

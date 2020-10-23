@@ -6,7 +6,7 @@
 #emplacement ou charger les fichier de configuration par instances
 INSTANCES_DIR='{{env.jormungandr_instances_dir}}'
 
-#chaine de connnection à postgresql (pgpool) pour la base jormungandr
+#connection string of postgresql (pgpool) for jormungandr
 {% if env.name == "prod" %}
 SQLALCHEMY_DATABASE_URI ='postgresql://{{env.jormungandr_postgresql_user}}:{{env.jormungandr_postgresql_password}}@{{env.jormungandr_postgresql_database_host}}:{{env.jormungandr_postgresql_database_port}}/{{env.jormungandr_postgresql_database}}'
 {% else %}
@@ -15,7 +15,7 @@ SQLALCHEMY_DATABASE_URI ='postgresql://{{env.jormungandr_postgresql_user}}:{{env
 SQLALCHEMY_DATABASE_URI='postgresql://{{env.tyr_postgresql_user}}:{{env.tyr_postgresql_password}}@{{env.tyr_postgresql_database_host}}/{{env.tyr_postgresql_database}}'
 {% endif %}
 
-#désactivation de l'authentification
+# deactivate the authentication
 PUBLIC={{env.jormungandr_is_public}}
 
 # Define ZMQ default socket type
@@ -101,7 +101,7 @@ SAVE_STAT = {{env.jormungandr_save_stats}}
 BROKER_URL = 'amqp://{{ env.rabbitmq_stats_user }}:{{ env.rabbitmq_stats_pass }}@{{ env.rabbitmq_stats_host }}:{{ env.rabbitmq_stats_port }}/{{ env.rabbitmq_stats_vhost }}'
 EXCHANGE_NAME = '{{env.rabbitmq_stats_exchange}}'
 
-{% for key, value in env.jormungandr_additional_settings.iteritems() %}
+{% for key, value in env.jormungandr_additional_settings.items() %}
 {{key}} = {{value}}
 {% endfor %}
 
