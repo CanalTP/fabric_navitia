@@ -117,7 +117,7 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     # check one instance on each WS
     #TODO: Check all instance not only random one. #pylint: disable=fixme
     for server in env.roledefs['ws']:
-        instance = random.choice(env.instances.values())
+        instance = random.choice(list(env.instances.values()))
         execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance.name)
 
     if check_version:
@@ -166,7 +166,7 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     # check one instance on each WS
     #TODO: Check all instance not only random one.
     for server in env.roledefs['ws']:
-        instance = random.choice(env.instances.values())
+        instance = random.choice(list(env.instances.values()))
         execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance.name)
 
     if env.eng_hosts_2 and env.ws_hosts_2:
@@ -192,7 +192,7 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
             execute(kraken.check_dead_instances, not_loaded_instances)
         # check second hosts set
         for server in env.roledefs['ws']:
-            instance = random.choice(env.instances.values())
+            instance = random.choice(list(env.instances.values()))
             execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance.name)
 
         env.roledefs['eng'] = env.eng_hosts

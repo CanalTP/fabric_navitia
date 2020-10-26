@@ -179,9 +179,7 @@ def start_jormungandr_all():
 @task
 @roles('ws')
 def start_services():
-    print("start_or_stop_with_delay apache2")
     start_or_stop_with_delay('apache2', env.APACHE_START_DELAY * 1000, 500, only_once=env.APACHE_START_ONLY_ONCE)
-    print("finish start_or_stop_with_delay apache2")
 
 
 @task
