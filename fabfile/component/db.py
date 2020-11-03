@@ -84,20 +84,20 @@ def postgis_initdb(instance_db):
     """
     if db_has_postgis(instance_db):
         #postgis 2.0 with old postgres version does not seems to be idempotent, so we do the postgis init only once
-        print "instance {} already has postgis, skiping postgis init".format(instance_db)
+        print("instance {} already has postgis, skiping postgis init".format(instance_db))
         return
     # # init_db.sh, create this on database host because sql scripts or @localhost
     # # and must be run as postgres user
 
     psql_version = get_psql_version()
-    if psql_version[0:2] == ["9", "1"]:
+    if psql_version[0:2] == [9, 1]:
         postgis_path = '/usr/share/postgresql/9.1/contrib/postgis-1.5'
         with settings(sudo_user='postgres'):
             sudo('psql --set ON_ERROR_STOP=1 --dbname={} '
                  '--file {}/postgis.sql'.format(instance_db, postgis_path))
             sudo('psql --set ON_ERROR_STOP=1 --dbname={}'
                 ' --file {}/spatial_ref_sys.sql'.format(instance_db, postgis_path))
-    elif psql_version[0:2] >= ["9", "3"]:
+    elif psql_version[0:2] >= [9, 3]:
         with settings(sudo_user='postgres'):
             sudo('psql -c "CREATE EXTENSION  IF NOT EXISTS postgis;" --dbname={}'.format(instance_db))
     else:
@@ -136,7 +136,7 @@ def check_is_postgresql_user_exist(username):
 def create_postgresql_user(username, password):
     """ Create a postgresql user
     """
-    require.postgres.user(username, password)
+    require.postgres.user(username, password, encrypted_password=True)
 
 
 @task

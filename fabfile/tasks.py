@@ -248,7 +248,7 @@ def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=Fa
                          format(len(instances_failed))))
     time_dict.register_end('bina')
     if only_bina:
-        print show_time_deploy(time_dict)
+        print(show_time_deploy(time_dict))
         return None
     if check_bina and instances_failed:
         abort(red("\n  ERROR: {} binarisation(s) have failed.".format(len(instances_failed))))
