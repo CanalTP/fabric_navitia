@@ -1,5 +1,9 @@
 node {
-    stage('clone navitia deployment conf') {
-        git url: 'https://github.com/CanalTP/navitia_deployment_conf.git'
+    stage('Unzip artifacts (artifacts.zip)') {
+        steps {
+            sh '''
+                echo "test"
+            '''
+        }
     }
 }
