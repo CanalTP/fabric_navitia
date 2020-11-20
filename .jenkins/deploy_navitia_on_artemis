@@ -1,0 +1,16 @@
+
+pipeline {
+    agent any
+    stages {
+        stage('Test stage') {
+            steps {
+                sh '''
+                    echo 'Hello Moto'
+                '''
+            }
+        }
+    }
+    post {
+        success { echo 'Job is successful, HO YEAH !' }
+    }
+}
