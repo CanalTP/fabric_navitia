@@ -1,16 +1,6 @@
-
-pipeline {
-    agent any
-    stages {
-        stage('Test stage') {
-            steps {
-                sh '''
-                    echo 'Hello Moto'
-                '''
-            }
-        }
-    }
-    post {
-        success { echo 'Job is successful, HO YEAH !' }
-    }
+node {
+stage 'testing'
+echo 'before input'
+stage 'testing 2'
+sleep 60
 }
