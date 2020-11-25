@@ -20,6 +20,8 @@ pipeline {
         stage('Unzip artifacts (artifacts.zip)') {
             steps {
                 sh '''
+                    echo "Remov eold artifacts"
+                    rm -rf navitia-*
                     echo "Unzip artifacts"
                     unzip -q artifacts.zip
                     # unzip artifacts (navitia_debian_packages.zip)
