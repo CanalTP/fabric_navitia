@@ -10,14 +10,8 @@ pipeline {
         }
         stage('Retreive Artifacts from Github') {
             steps { 
-                withCredentials([
-                        sshUserPrivateKey(
-                            credentialsId: 'jenkins-core-github-credentials',
-                            keyFileVariable: 'GITHUB_TOKEN',
-                            passphraseVariable: '',
-                            usernameVariable: 'jenkins-kisio-core')
-                    ]) {
-                        sh '''
+                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
                             python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a artifacts.zip -o "."
                         '''
                     }
