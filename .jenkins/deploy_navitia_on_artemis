@@ -4,8 +4,6 @@ pipeline {
         stage('Install requirement') {
             steps {
                 sh '''
-                    virtualenv /tmp/venv_github -p python2
-                    . /tmp/venv_github/bin/activate
                     pip install -r scripts/requirements.txt
                 '''
             }
