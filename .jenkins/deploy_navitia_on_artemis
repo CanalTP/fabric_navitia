@@ -33,7 +33,17 @@ pipeline {
         }
         stage('clone navitia deployment conf') {
             steps {
-                git url: 'https://github.com/CanalTP/navitia_deployment_conf.git'
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'jenkins-core-ssh',
+                        keyFileVariable: 'SSH_KEY_FILE',
+                        passphraseVariable: '',
+                        usernameVariable: 'jenkins-kisio-core')
+                ]) {
+                    sh '''
+                        git clone https://github.com/CanalTP/navitia_deployment_conf.git
+                    '''
+                }
             }
         }
     }
