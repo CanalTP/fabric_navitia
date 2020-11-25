@@ -1,6 +1,47 @@
-node {
-stage 'testing'
-echo 'before input'
-stage 'testing 2'
-sleep 60
+pipeline {
+    agent any
+    stages {
+        stage('Test stage') {
+            steps {
+                sh '''
+                    echo 'Hello Moto'
+                '''
+            }
+        }
+        stage('Retreive Artifacts from Github') {
+            steps { 
+                withCredentials([
+                        sshUserPrivateKey(
+                            credentialsId: 'jenkins-core-github-access-token',
+                            keyFileVariable: 'GITHUB_TOKEN',
+                            passphraseVariable: '',
+                            usernameVariable: 'jenkins-kisio-core')
+                    ]) {
+                        sh '''
+                            python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a artifacts.zip -o "."
+                        '''
+                    }
+            }
+        }      
+        stage('Unzip artifacts (artifacts.zip)') {
+            steps {
+                sh '''
+                    echo "Unzip artifacts"
+                    unzip -q artifacts.zip
+                    # unzip artifacts (navitia_debian_packages.zip)
+                    echo "Unzip .deb"
+                    unzip -q navitia_debian_packages.zip 2>&1
+                    # suppress *.zip
+                    echo "suppress useless zip"
+                    rm -f artifacts.zip navitia_debian_packages.zip
+                '''
+            }
+        }
+        stage('clone navitia deployment conf') {
+            git url: 'https://github.com/CanalTP/navitia_deployment_conf.git'
+        }
+    }
+    post {
+        success { echo 'Job is successful, HO YEAH !' }
+    }
 }
