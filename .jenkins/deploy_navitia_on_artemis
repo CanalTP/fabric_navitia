@@ -12,7 +12,7 @@ pipeline {
             steps { 
                 withCredentials([
                         sshUserPrivateKey(
-                            credentialsId: 'jenkins-core-github-access-token',
+                            credentialsId: 'jenkins-core-github-credentials',
                             keyFileVariable: 'GITHUB_TOKEN',
                             passphraseVariable: '',
                             usernameVariable: 'jenkins-kisio-core')
