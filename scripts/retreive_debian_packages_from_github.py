@@ -213,10 +213,10 @@ def main():
 
     if args.remove_artifacts:
         logger.info("remove old artifacts")
-        remove_all_artifacts(DEFAULT_ARTIFACTS_NAME):
+        remove_all_artifacts(DEFAULT_ARTIFACTS_NAME)
     elif args.uncompress_artifacts:
         logger.info("uncompress the downloaded artifacts")
-        uncompress_artifacts(DEFAULT_ARTIFACTS_NAME):
+        uncompress_artifacts(DEFAULT_ARTIFACTS_NAME)
     else:
         artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir)
         artifacts_receiver.check_github_api()
