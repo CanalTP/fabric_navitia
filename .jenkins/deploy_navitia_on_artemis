@@ -12,9 +12,9 @@ pipeline {
             steps { 
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
-                            python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a artifacts.zip -o "."
-                        '''
-                    }
+                        python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a artifacts.zip -o "."
+                    '''
+                }
             }
         }      
         stage('Unzip artifacts (artifacts.zip)') {
@@ -33,9 +33,16 @@ pipeline {
                 '''
             }
         }
-        stage('clone navitia deployment conf') {
+        stage('Retreive deployment configuration') {
             steps {
                 git credentialsId: 'jenkins-core-ssh', url: 'git@github.com:CanalTP/navitia_deployment_conf.git'
+            }
+        }
+        stage('Run deployment') {
+            steps {
+                sh '''
+                    PYTHONPATH=navitia_deployment_conf/ python2.7 -u -m fabric use:dev upgrade_all:check_version=False
+                '''
             }
         }
     }
