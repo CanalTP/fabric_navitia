@@ -155,15 +155,11 @@ class GithubArtifactsReceiver:
 
 def uncompress_artifacts(path_to_artifacts):
     """ uncompress the downloaded artifacts """
-    logger = config_logger()
-    logger.info("uncompress the downloaded artifacts")
     zip = zipfile.ZipFile(path_to_artifacts)
     zip.extractall()
-    logger.info("uncompress internal navitia_debian_packages.zip")
     zip = zipfile.ZipFile('navitia_debian_packages.zip')
     zip.extractall()
     zip.close()
-    logger.info("you can have now acces to navitia-*.deb packages")
 
 
 def remove_all_artifacts(path_to_artifacts):
@@ -221,6 +217,7 @@ def main():
     elif args.uncompress_artifacts:
         logger.info("uncompress the downloaded artifacts")
         uncompress_artifacts(DEFAULT_ARTIFACTS_NAME)
+        logger.info("you can have now acces to navitia-*.deb packages")
     else:
         artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir)
         artifacts_receiver.check_github_api()
