@@ -27,16 +27,7 @@ pipeline {
         stage('Unzip artifacts (artifacts.zip)') {
             steps {
                 sh '''
-                    echo "Remove old artifacts"
-                    rm -rf navitia-*
-                    echo "Unzip artifacts"
-                    unzip -q artifacts.zip
-                    # unzip artifacts (navitia_debian_packages.zip)
-                    echo "Unzip .deb"
-                    unzip -q navitia_debian_packages.zip 2>&1
-                    # suppress *.zip
-                    echo "suppress useless zip"
-                    rm -f artifacts.zip navitia_debian_packages.zip
+                    python2.7 scripts/retreive_debian_packages_from_github.py -z artifacts.zip
                 '''
             }
         }
