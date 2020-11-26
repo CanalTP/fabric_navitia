@@ -20,7 +20,9 @@ pipeline {
             steps { 
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
+                        ls -al
                         python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a artifacts.zip -o "."
+                        ls -al
                     '''
                 }
             }
@@ -28,7 +30,9 @@ pipeline {
         stage('Unzip artifacts (artifacts.zip)') {
             steps {
                 sh '''
+                    ls -al
                     python2.7 scripts/retreive_debian_packages_from_github.py -z artifacts.zip
+                    ls -al
                 '''
             }
         }
