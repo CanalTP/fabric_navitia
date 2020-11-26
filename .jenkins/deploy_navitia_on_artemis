@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh '''
                     pip -V
-                    sudo apt-get install -y virtualenv
+                    apt-get update
                 '''
             }
         }
