@@ -197,7 +197,7 @@ def parse_args(parser, logger):
         logger.error("Github user is a mandatory parameter")
         logger.error("Please fill -u parameter")
         sys.exit("Github user is a mandatory parameter")
-    if not args.github_user and not args.uncompress_artifacts and not args.uncompress_artifacts:
+    if not args.github_user and not args.remove_artifacts and not args.uncompress_artifacts:
         logger.error("Github token is a mandatory parameter")
         logger.error("Please fill -t parameter")
         sys.exit("Github token is a mandatory parameter")
