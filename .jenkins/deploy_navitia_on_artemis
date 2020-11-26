@@ -4,15 +4,15 @@ pipeline {
         stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
-                    pip install -r scripts/requirements.txt
+                    pip2.7 install -r scripts/requirements.txt
                 '''
             }
         }
-        stage('Install requirement for deployment') {
+        stage('Install requirement for fabric deployment') {
             steps {
                 sh '''
                     ls -al
-                    pip install -r requirements.txt
+                    pip2.7 install -r requirements.txt
                 '''
             }
         }
