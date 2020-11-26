@@ -41,6 +41,7 @@ pipeline {
         stage('Install requirement for deployment') {
             steps {
                 sh '''
+                    ls -al
                     pip install -r requirements.txt
                 '''
             }
