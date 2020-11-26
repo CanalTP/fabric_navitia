@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Install requirement') {
+        stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
                     pip install -r scripts/requirements.txt
@@ -36,6 +36,13 @@ pipeline {
         stage('Retreive deployment configuration') {
             steps {
                 git credentialsId: 'jenkins-core-ssh', url: 'git@github.com:CanalTP/navitia_deployment_conf.git'
+            }
+        }
+        stage('Install requirement for deployment') {
+            steps {
+                sh '''
+                    pip install -r requirements.txt
+                '''
             }
         }
         stage('Run deployment') {
