@@ -22,7 +22,6 @@ pipeline {
                 sh '''
                     echo "Remove old artifacts"
                     rm -rf navitia-*
-                    rm -rf navitia_debian_packages.zip
                     echo "Unzip artifacts"
                     unzip -q artifacts.zip
                     # unzip artifacts (navitia_debian_packages.zip)
@@ -44,7 +43,7 @@ pipeline {
                         usernameVariable: 'jenkins-kisio-core')
                 ]) {
                     sh '''
-                        git clone https://github.com/CanalTP/navitia_deployment_conf.git
+                        git clone git@github.com:CanalTP/navitia_deployment_conf.git
                     '''
                 }
             }
