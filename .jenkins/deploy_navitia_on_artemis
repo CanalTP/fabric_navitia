@@ -4,7 +4,15 @@ pipeline {
         stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
-                    pip2.7 install -r scripts/requirements.txt
+                    pip -v
+                    apt install virtualenv
+                '''
+            }
+        }
+        stage('Install requirement to retreive Github artifacts') {
+            steps {
+                sh '''
+                    pip install -r scripts/requirements.txt
                 '''
             }
         }
@@ -12,7 +20,7 @@ pipeline {
             steps {
                 sh '''
                     ls -al
-                    pip2.7 install -r requirements.txt
+                    pip install -r requirements.txt
                 '''
             }
         }
