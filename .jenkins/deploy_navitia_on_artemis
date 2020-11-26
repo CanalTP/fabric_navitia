@@ -11,7 +11,6 @@ pipeline {
         stage('Remove old artifacts') {
             steps {
                 sh '''
-                    ls -al
                     python2.7 scripts/retreive_debian_packages_from_github.py -r artifacts.zip
                 '''
             }
@@ -20,9 +19,7 @@ pipeline {
             steps { 
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
-                        ls -al
                         python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a artifacts.zip -o "."
-                        ls -al
                     '''
                 }
             }
@@ -30,9 +27,7 @@ pipeline {
         stage('Unzip artifacts (artifacts.zip)') {
             steps {
                 sh '''
-                    ls -al
                     python2.7 scripts/retreive_debian_packages_from_github.py -z artifacts.zip
-                    ls -al
                 '''
             }
         }
@@ -61,6 +56,12 @@ pipeline {
         }
     }
     post {
-        success { echo 'Job is successful, HO YEAH !' }
+        failure { 
+            withCredentials([string(credentialsId: 'navitia_core_team_slack_chan', variable: 'NAVITIA_CORE_TEAM_SLACK_CHAN')]) {
+                sh '''
+                    curl -X POST -H 'Content-type: application/json' --data '{"text":":warning: Deploy Navitia on Artemis is failed"}' NAVITIA_CORE_TEAM_SLACK_CHAN
+                '''
+            }
+        }
     }
 }
