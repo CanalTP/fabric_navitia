@@ -44,6 +44,7 @@ import wget
 import sys
 import os
 import argparse
+import zipfile
 
 DEFAULT_WORKFLOW_NAME = "Build Navitia Packages For Dev"
 DEFAULT_OUTPUT_PATH = "."
@@ -151,6 +152,26 @@ class GithubArtifactsReceiver:
         self.download_artifacts(artifacts_url, run_id)
 
 
+def uncompress_artifacts(path_to_artifacts):
+    """ uncompress the downloaded artifacts """
+    logger = config_logger()
+    logger.info("uncompress the downloaded artifacts")
+    zip = zipfile.ZipFile(path_to_artifacts)
+    zip.extractall()
+    logger.info("uncompress internal navitia_debian_packages.zip")
+    zip = zipfile.ZipFile('navitia_debian_packages.zip')
+    zip.extractall()
+    zip.close()
+    logger.info("you can have now acces to navitia-*.deb packages")
+
+
+def remove_all_artifacts(path_to_artifacts):
+    """ remove old artifacts """
+    os.remove("navitia-*")
+    os.remove("navitia_debian_packages.zip")
+    os.remove(path_to_artifacts)
+
+
 def config_logger():
     logger = logging.getLogger('retreive debian package from github')
     logger.setLevel(logging.DEBUG)
@@ -168,6 +189,8 @@ def parse_args(parser, logger):
     parser.add_argument("-w", dest="workflow_name", help="Github Workflow name", default=DEFAULT_WORKFLOW_NAME)
     parser.add_argument("-a", dest="artifacts_name", help="Artifacts name", default=DEFAULT_ARTIFACTS_NAME)
     parser.add_argument("-o", dest="output_dir", help="Output path", default=DEFAULT_OUTPUT_PATH)
+    parser.add_argument("-r", dest="remove_artifacts", help="Remove artifacts in current directory" default="")
+    parser.add_argument("-z", dest="uncompress_artifacts", help="Uncompress the downloaded artifacts" default="")
     args = parser.parse_args()
 
     if not args.github_user:
@@ -188,9 +211,16 @@ def main():
 
     args = parse_args(argparse.ArgumentParser(), logger)
 
-    artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir)
-    artifacts_receiver.check_github_api()
-    artifacts_receiver.run()
+    if args.remove_artifacts != "":
+        logger.info("remove old artifacts")
+        remove_all_artifacts(DEFAULT_ARTIFACTS_NAME):
+    elif args.uncompress_artifacts != "":
+        logger.info("uncompress the downloaded artifacts")
+        uncompress_artifacts(DEFAULT_ARTIFACTS_NAME):
+    else:
+        artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir)
+        artifacts_receiver.check_github_api()
+        artifacts_receiver.run()
 
     logger.info("finish process")
 
