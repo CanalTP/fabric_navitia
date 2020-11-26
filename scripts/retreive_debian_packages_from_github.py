@@ -170,8 +170,10 @@ def remove_all_artifacts(path_to_artifacts):
     """ remove old artifacts """
     for f in glob.glob("navitia-*"):
         os.remove(f)
-    os.remove("navitia_debian_packages.zip")
-    os.remove(path_to_artifacts)
+    if os.path.isfile("navitia_debian_packages.zip"):
+        os.remove("navitia_debian_packages.zip")
+    if os.path.isfile(path_to_artifacts):
+        os.remove(path_to_artifacts)
 
 
 def config_logger():
