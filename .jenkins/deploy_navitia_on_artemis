@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Install requirement to retreive Github artifacts') {
+        stage('Install requirement to retreive Github artifacts 2') {
             steps {
                 sh '''
                     pip -v
