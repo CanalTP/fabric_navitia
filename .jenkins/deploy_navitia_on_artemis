@@ -41,9 +41,11 @@ pipeline {
             }
         }
         stage('Retreive deployment configuration') {
-            sh 'mkdir -p build' 
-            dir('build') {
-                git credentialsId: 'jenkins-core-ssh', url: 'git@github.com:CanalTP/navitia_deployment_conf.git'
+            steps {
+                sh 'mkdir -p build' 
+                dir('build') {
+                    git credentialsId: 'jenkins-core-ssh', url: 'git@github.com:CanalTP/navitia_deployment_conf.git'
+                }
             }
         }
         stage('Run deployment') {
