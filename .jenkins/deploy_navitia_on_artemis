@@ -11,7 +11,7 @@ pipeline {
         stage('Install requirement for fabric deployment') {
             steps {
                 sh '''
-                    pip install -r requirements.txt --exists-action
+                    pip install -r requirements.txt --exists-action w
                 '''
             }
         }
