@@ -48,6 +48,11 @@ pipeline {
         stage('Run deployment') {
             steps {
                 sh '''
+                    ls -al 
+                    cd ..
+                    ls -al
+                    cd ..
+                    ls -al
                     PYTHONPATH=navitia_deployment_conf/ python2.7 -u -m fabric use:dev upgrade_all:check_version=False
                 '''
             }
