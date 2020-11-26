@@ -8,10 +8,10 @@ pipeline {
                 '''
             }
         }
-        stage('Install requirement for fabric deployment') {
+        stage('Remove old artifacts') {
             steps {
                 sh '''
-                    pip install -r requirements.txt --exists-action w
+                    python2.7 scripts/retreive_debian_packages_from_github.py remove_all_artifacts 'artifacts.zip'
                 '''
             }
         }
@@ -48,10 +48,18 @@ pipeline {
                 }
             }
         }
+        stage('Install requirement for fabric deployment') {
+            steps {
+                sh '''
+                    pip install -r requirements.txt --exists-action w
+                '''
+            }
+        }
         stage('Run deployment') {
             steps {
                 sh '''
-                    PYTHONPATH=navitia_deployment_conf/ python2.7 -u -m fabric use:dev upgrade_all:check_version=False
+                    PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis upgrade_version
+                    PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis update_all_configurations:restart=false
                 '''
             }
         }
