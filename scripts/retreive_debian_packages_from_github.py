@@ -189,8 +189,8 @@ def parse_args(parser, logger):
     parser.add_argument("-w", dest="workflow_name", help="Github Workflow name", default=DEFAULT_WORKFLOW_NAME)
     parser.add_argument("-a", dest="artifacts_name", help="Artifacts name", default=DEFAULT_ARTIFACTS_NAME)
     parser.add_argument("-o", dest="output_dir", help="Output path", default=DEFAULT_OUTPUT_PATH)
-    parser.add_argument("-r", dest="remove_artifacts", help="Remove artifacts in current directory" default="")
-    parser.add_argument("-z", dest="uncompress_artifacts", help="Uncompress the downloaded artifacts" default="")
+    parser.add_argument("-r", dest="remove_artifacts", help="Remove artifacts in current directory")
+    parser.add_argument("-z", dest="uncompress_artifacts", help="Uncompress the downloaded artifacts")
     args = parser.parse_args()
 
     if not args.github_user:
@@ -211,10 +211,10 @@ def main():
 
     args = parse_args(argparse.ArgumentParser(), logger)
 
-    if args.remove_artifacts != "":
+    if args.remove_artifacts:
         logger.info("remove old artifacts")
         remove_all_artifacts(DEFAULT_ARTIFACTS_NAME):
-    elif args.uncompress_artifacts != "":
+    elif args.uncompress_artifacts:
         logger.info("uncompress the downloaded artifacts")
         uncompress_artifacts(DEFAULT_ARTIFACTS_NAME):
     else:
