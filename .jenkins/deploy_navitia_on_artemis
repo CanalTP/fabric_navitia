@@ -11,6 +11,7 @@ pipeline {
         stage('Remove old artifacts') {
             steps {
                 sh '''
+                    ls -al
                     python2.7 scripts/retreive_debian_packages_from_github.py -r artifacts.zip
                 '''
             }
