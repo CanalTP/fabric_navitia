@@ -43,6 +43,7 @@ import requests
 import wget
 import sys
 import os
+import glob
 import argparse
 import zipfile
 
@@ -167,7 +168,8 @@ def uncompress_artifacts(path_to_artifacts):
 
 def remove_all_artifacts(path_to_artifacts):
     """ remove old artifacts """
-    os.remove("navitia-*")
+    for f in glob.glob("navitia-*"):
+        os.remove(f)
     os.remove("navitia_debian_packages.zip")
     os.remove(path_to_artifacts)
 
