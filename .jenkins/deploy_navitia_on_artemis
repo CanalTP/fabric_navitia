@@ -1,14 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Install requirement to retreive Github artifacts 2') {
-            steps {
-                sh '''
-                    pip -V
-                    apt-get update
-                '''
-            }
-        }
         stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
@@ -19,7 +11,6 @@ pipeline {
         stage('Install requirement for fabric deployment') {
             steps {
                 sh '''
-                    ls -al
                     pip install -r requirements.txt
                 '''
             }
