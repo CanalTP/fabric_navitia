@@ -56,6 +56,8 @@ pipeline {
                     echo "${PLATFORM}"
                 '''
             }
+        }
+        stage('Love') {
             when {
                 expression { ${PLATFORM} == 'dev_debian10' }
             }
