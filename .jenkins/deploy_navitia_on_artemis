@@ -13,11 +13,11 @@ pipeline {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     script {
                         if (env.PLATFORM == 'dev_debian8') {
-                            navitia_packages_type = "navitia-debian8-packages.zip"
+                            def navitia_packages_type = "navitia-debian8-packages.zip"
                         } else if (env.PLATFORM == 'dev_debian10') {
-                            navitia_packages_type = "navitia-debian10-packages.zip"
+                            def navitia_packages_type = "navitia-debian10-packages.zip"
                         } else if (env.PLATFORM == 'artemis_debian8') {
-                            navitia_packages_type = "navitia-debian8-packages.zip"
+                            def navitia_packages_type = "navitia-debian8-packages.zip"
                         } else {
                             echo 'selected platform not available'
                         }
