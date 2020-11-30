@@ -50,7 +50,7 @@ pipeline {
             steps {
                 sh '''
                     echo "LOVE"
-                    echo "${params.PLATFORM}"
+                    echo "${PLATFORM}"
                 '''
             }
         }
