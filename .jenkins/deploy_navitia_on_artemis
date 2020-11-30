@@ -22,6 +22,7 @@ pipeline {
                     }
                     echo env.NAVITIA_DEBIAN_PACKAGES selected
                 }
+                sh 'echo ${NAVITIA_DEBIAN_PACKAGES} "is selected"'
             }
         }
         stage('process navitia debian packages') {
