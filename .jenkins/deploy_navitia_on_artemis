@@ -46,21 +46,13 @@ pipeline {
                 '''
             }
         }
-        if (${PLATFORM} == "dev_debian8") {                                          
-            stage('example-1') {
-                    steps {
-                        shell("echo 'just one step'")
-                    }
-                }
+        stage('example-2') {
+            when {
+                expression {${PLATFORM} == "dev_debian8"}
             }
-        } else {                                   
-            stage('example-2') {
-                    steps {
-                        shell("echo 'just one step 2'")
-                    }
-                }
+            steps {
+                shell("echo 'just one step'")
             }
-
         }
         stage('Run deployment') {
             steps {
