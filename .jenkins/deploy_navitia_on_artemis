@@ -47,20 +47,23 @@ pipeline {
             }
         }
         stage('Love') {
+            when {
+                expression { ${PLATFORM} == 'dev_debian8' }
+            }
             steps {
-                script {
-                    if ($(PLATFORM) == "dev_debian8") {
-                        sh '''
-                            echo "LOVE"
-                            echo "${PLATFORM}"
-                        '''
-                    } else {
-                        sh '''
-                            echo "KIKOU"
-                            echo "${PLATFORM}"
-                        '''
-                    }
-                }
+                sh '''
+                    echo "LOVE"
+                    echo "${PLATFORM}"
+                '''
+            }
+            when {
+                expression { ${PLATFORM} == 'dev_debian10' }
+            }
+            steps {
+                sh '''
+                    echo "KIKOU"
+                    echo "${PLATFORM}"
+                '''
             }
         }
         stage('Run deployment') {
