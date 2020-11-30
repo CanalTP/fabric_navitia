@@ -8,7 +8,7 @@ pipeline {
                 '''
             }
         }
-        stage('Remove old artifacts') {
+        stage('process navitia debian packages') {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     script {
