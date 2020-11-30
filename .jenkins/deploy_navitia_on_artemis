@@ -49,9 +49,10 @@ pipeline {
                 '''
             }
         }
-        stage('Run deployment 1') {
+        stage('Love') {
             steps {
                 sh '''
+                    echo "LOVE"
                     echo "${params.PLATFORM}"
                 '''
             }
