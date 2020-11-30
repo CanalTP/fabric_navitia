@@ -57,7 +57,7 @@ pipeline {
                 '''
             }
         }
-        stage('Love') {
+        stage('kikou') {
             when {
                 expression { ${PLATFORM} == 'dev_debian10' }
             }
