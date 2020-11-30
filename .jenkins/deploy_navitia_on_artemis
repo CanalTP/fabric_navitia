@@ -48,10 +48,17 @@ pipeline {
         }
         stage('Love') {
             steps {
-                sh '''
-                    echo "LOVE"
-                    echo "${PLATFORM}"
-                '''
+                if ($(PLATFORM) == "dev_debian8") {
+                    sh '''
+                        echo "LOVE"
+                        echo "${PLATFORM}"
+                    '''
+                } else {
+                    sh '''
+                        echo "KIKOU"
+                        echo "${PLATFORM}"
+                    '''
+                }
             }
         }
         stage('Run deployment') {
