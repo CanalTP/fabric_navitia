@@ -20,7 +20,7 @@ pipeline {
                     } else {
                         echo 'selected platform not available'
                     }
-                    echo env.NAVITIA_DEBIAN_PACKAGES "selected"
+                    echo env.NAVITIA_DEBIAN_PACKAGES selected
                 }
             }
         }
