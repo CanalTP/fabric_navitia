@@ -110,6 +110,7 @@ class GithubArtifactsReceiver:
             if artifact["name"] == self.artifacts_name.split('.')[0]:
                 artifact_info = artifact
                 zip_url = self.url_header + artifact_info["archive_download_url"].replace('https://', '')
+                self.logger.info("artifacts name - {}".format(artifact["name"]))
                 break
         if zip_url == "":
             self.logger.error("no artifact available - run id {}".format(run_id))
