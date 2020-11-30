@@ -28,12 +28,15 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                         sh '''
+                            ls -al
                             echo "remove old artifacts from" ${NAVITIA_DEBIAN_PACKAGES}
                             python2.7 scripts/retreive_debian_packages_from_github.py -r ${NAVITIA_DEBIAN_PACKAGES}
+                            ls -al
                             echo "retreive debian packages for navitia"
                             python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev Multi Distributions" -a ${NAVITIA_DEBIAN_PACKAGES} -o "."
                             echo "unzip" ${NAVITIA_DEBIAN_PACKAGES}
                             python2.7 scripts/retreive_debian_packages_from_github.py -z ${NAVITIA_DEBIAN_PACKAGES}
+                            ls -al
                         '''
                 }
             }
@@ -71,7 +74,7 @@ pipeline {
                             PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis update_all_configurations:restart=false
                         '''
                     } else {
-                        echo 'selected platform not available'
+                        echo 'platform not available'
                     }
                 }
             }
