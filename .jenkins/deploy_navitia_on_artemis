@@ -20,7 +20,7 @@ pipeline {
                     } else {
                         echo 'selected platform not available'
                     }
-                    echo "With" ${PLATFORM}"," ${NAVITIA_DEBIAN_PACKAGES} "is selected"
+                    echo ${NAVITIA_DEBIAN_PACKAGES} "selected"
                 }
             }
         }
