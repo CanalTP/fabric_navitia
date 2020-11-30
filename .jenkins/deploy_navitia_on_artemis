@@ -46,25 +46,14 @@ pipeline {
                 '''
             }
         }
-        stage('example-2') {
-            steps {
-                script {
-                    if (env.PLATFORM == 'dev_debian8') {
-                        echo 'I only execute on the master branch'
-                    } else if {
-                        echo 'I execute elsewhere'
-                    }
-                }
-            }
-        }
         stage('Run deployment') {
             steps {
                 script {
                     if (env.PLATFORM == 'dev_debian8') {
                         echo 'deploy on dev debian 8 platform'
-                    } elif (env.PLATFORM == 'dev_debian10') {
+                    } else if (env.PLATFORM == 'dev_debian10') {
                         echo 'deploy on dev debian 10 platform'
-                    } elif (env.PLATFORM == 'artemis_debian8') {
+                    } else if (env.PLATFORM == 'artemis_debian8') {
                         echo 'deploy on artemis debian 8 platform'
                         sh '''
                             PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis upgrade_version
