@@ -51,7 +51,7 @@ pipeline {
                 script {
                     if (env.PLATFORM == 'dev_debian8') {
                         echo 'I only execute on the master branch'
-                    } else {
+                    } else if {
                         echo 'I execute elsewhere'
                     }
                 }
