@@ -8,28 +8,32 @@ pipeline {
                 '''
             }
         }
+        stage('packages name') {
+            steps {
+                script {
+                    if (env.PLATFORM == 'dev_debian8') {
+                        env.navitia_packages_type = "navitia-debian8-packages.zip"
+                    } else if (env.PLATFORM == 'dev_debian10') {
+                        env.navitia_packages_type = "navitia-debian10-packages.zip"
+                    } else if (env.PLATFORM == 'artemis_debian8') {
+                        env.navitia_packages_type = "navitia-debian8-packages.zip"
+                    } else {
+                        echo 'selected platform not available'
+                    }
+                }
+            }
+        }
         stage('process navitia debian packages') {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
-                    script {
-                        if (env.PLATFORM == 'dev_debian8') {
-                            env.navitia_packages_type = "navitia-debian8-packages.zip"
-                        } else if (env.PLATFORM == 'dev_debian10') {
-                            env.navitia_packages_type = "navitia-debian10-packages.zip"
-                        } else if (env.PLATFORM == 'artemis_debian8') {
-                            env.navitia_packages_type = "navitia-debian8-packages.zip"
-                        } else {
-                            echo 'selected platform not available'
-                        }
                         sh '''
-                            echo "remove old artifacts" ${navitia_packages_type}
+                            echo "remove old artifacts from" ${navitia_packages_type}
                             python2.7 scripts/retreive_debian_packages_from_github.py -r ${navitia_packages_type}
-                            echo "retreive artifacts"
+                            echo "retreive debian packages for navitia"
                             python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev Multi Distributions" -a ${navitia_packages_type} -o "."
-                            echo "unzip artifacts"
+                            echo "unzip" ${navitia_packages_type}
                             python2.7 scripts/retreive_debian_packages_from_github.py -z ${navitia_packages_type}
                         '''
-                    }
                 }
             }
         }
