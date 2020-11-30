@@ -1,6 +1,14 @@
 pipeline {
     agent any
     stages {
+        stage('example-2') {
+            when {
+                expression {${PLATFORM} == "dev_debian8"}
+            }
+            steps {
+                shell("echo 'just one step'")
+            }
+        }
         stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
@@ -44,14 +52,6 @@ pipeline {
                 sh '''
                     pip install -r requirements.txt --exists-action w
                 '''
-            }
-        }
-        stage('example-2') {
-            when {
-                expression {${PLATFORM} == "dev_debian8"}
-            }
-            steps {
-                shell("echo 'just one step'")
             }
         }
         stage('Run deployment') {
