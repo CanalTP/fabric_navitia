@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'PLATFORM', defaultValue: 'dev_debian8', description: 'the platform to deploy Navitia')
-    }
     stages {
         stage('Install requirement to retreive Github artifacts') {
             steps {
