@@ -22,6 +22,7 @@ pipeline {
                             echo 'selected platform not available'
                         }
                         sh '''
+                            #!/usr/bin/env bash
                             echo "remove old artifacts"
                             echo ${env.navitia_packages_type}
                             python2.7 scripts/retreive_debian_packages_from_github.py -r ${navitia_packages_type}
