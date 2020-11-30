@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('example-2') {
             when {
-                expression {params.PLATFORM == "dev_debian8"}
+                expression {"${PLATFORM}" == "dev_debian8"}
             }
             steps {
                 shell("echo 'just one step'")
