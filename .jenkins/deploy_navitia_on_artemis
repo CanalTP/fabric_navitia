@@ -24,21 +24,30 @@ pipeline {
                 sh 'echo ${NAVITIA_DEBIAN_PACKAGES} "is selected"'
             }
         }
+        stage('remove old navitia debian packages') {
+            steps {
+                sh '''
+                    echo "remove old artifacts from" ${NAVITIA_DEBIAN_PACKAGES}
+                    python2.7 scripts/retreive_debian_packages_from_github.py -r ${NAVITIA_DEBIAN_PACKAGES}
+                '''
+            }
+        }
         stage('process navitia debian packages') {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
-                        sh '''
-                            ls -al
-                            echo "remove old artifacts from" ${NAVITIA_DEBIAN_PACKAGES}
-                            python2.7 scripts/retreive_debian_packages_from_github.py -r ${NAVITIA_DEBIAN_PACKAGES}
-                            ls -al
-                            echo "retreive debian packages for navitia"
-                            python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev Multi Distributions" -a ${NAVITIA_DEBIAN_PACKAGES} -o "."
-                            echo "unzip" ${NAVITIA_DEBIAN_PACKAGES}
-                            python2.7 scripts/retreive_debian_packages_from_github.py -z ${NAVITIA_DEBIAN_PACKAGES}
-                            ls -al
-                        '''
+                    sh '''
+                        echo "retreive debian packages for navitia"
+                        python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev Multi Distributions" -a ${NAVITIA_DEBIAN_PACKAGES} -o "."
+                    '''
                 }
+            }
+        }
+        stage('unzip navitia debian packages bundle') {
+            steps {
+                sh '''
+                    echo "unzip" ${NAVITIA_DEBIAN_PACKAGES}
+                    python2.7 scripts/retreive_debian_packages_from_github.py -z ${NAVITIA_DEBIAN_PACKAGES}
+                '''
             }
         }
         stage('Retreive deployment configuration') {
@@ -60,15 +69,15 @@ pipeline {
             steps {
                 script {
                     if (env.PLATFORM == 'dev_debian8') {
-                        echo 'deploy on dev debian 8 platform'
+                        echo 'deploy on dev - debian 8 platform'
                         sh '''
                             PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:dev upgrade_all:check_version=False
                         '''
                     } else if (env.PLATFORM == 'dev_debian10') {
-                        echo 'deploy on dev debian 10 platform'
+                        echo 'deploy on dev - debian 10 platform'
                         echo 'Not implemented yet !!!!!'
                     } else if (env.PLATFORM == 'artemis_debian8') {
-                        echo 'deploy on artemis debian 8 platform'
+                        echo 'deploy on artemis - debian 8 platform'
                         sh '''
                             PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis upgrade_version
                             PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis update_all_configurations:restart=false
