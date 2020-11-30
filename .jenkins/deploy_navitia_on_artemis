@@ -46,7 +46,7 @@ pipeline {
                 '''
             }
         }
-        job('example-1') {
+        stage('example-1') {
             steps {
                 conditionalSteps {
                     condition {
@@ -58,7 +58,7 @@ pipeline {
                 }
             }
         }
-        job('example-2') {
+        stage('example-2') {
             steps {
                 conditionalSteps {
                     condition {
