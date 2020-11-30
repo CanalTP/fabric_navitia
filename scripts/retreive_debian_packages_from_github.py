@@ -103,13 +103,18 @@ class GithubArtifactsReceiver:
             self.logger.error("No artifacts available for run {}".format(run_id))
             self.logger.error("Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
             sys.exit()
-        if resp["total_count"] > 1:
-            self.logger.error("There must be only one artifacts - run id {}".format(run_id))
+
+        # the artifact that match
+        zip_url = ""
+        for artifact in resp["artifacts"]:
+            if artifact["name"] == self.artifacts_name:
+                artifact_info = artifact
+                zip_url = self.url_header + artifact_info["archive_download_url"].replace('https://', '')
+                break
+        if zip_url == "":
+            self.logger.error("no artifact available - run id {}".format(run_id))
             self.logger.error("Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
             sys.exit()
-
-        artifact_info = resp["artifacts"][0]
-        zip_url = self.url_header + artifact_info["archive_download_url"].replace('https://', '')
 
         # Remove old artifacts with the same name if exist
         if os.path.isfile(self.old_artifacts_to_remove):
