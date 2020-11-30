@@ -20,7 +20,7 @@ pipeline {
                     } else {
                         echo 'selected platform not available'
                     }
-                    echo "With ${PLATFORM}, ${navitia_packages_type} is selected"
+                    echo "With" ${PLATFORM}"," ${navitia_packages_type} "is selected"
                 }
             }
         }
