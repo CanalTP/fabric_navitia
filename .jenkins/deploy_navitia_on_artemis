@@ -20,7 +20,6 @@ pipeline {
                     } else {
                         echo 'selected platform not available'
                     }
-                    echo env.NAVITIA_DEBIAN_PACKAGES selected
                 }
                 sh 'echo ${NAVITIA_DEBIAN_PACKAGES} "is selected"'
             }
