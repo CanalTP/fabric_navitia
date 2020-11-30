@@ -47,7 +47,7 @@ import glob
 import argparse
 import zipfile
 
-DEFAULT_WORKFLOW_NAME = "Build Navitia Packages For Dev Multi Distributions "
+DEFAULT_WORKFLOW_NAME = "Build Navitia Packages For Dev Multi Distributions"
 DEFAULT_OUTPUT_PATH = "."
 DEFAULT_ARTIFACTS_NAME = "navitia-debian8-packages.zip"
 
