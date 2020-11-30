@@ -12,14 +12,15 @@ pipeline {
             steps {
                 script {
                     if (env.PLATFORM == 'dev_debian8') {
-                        env.navitia_packages_type = "navitia-debian8-packages.zip"
+                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
                     } else if (env.PLATFORM == 'dev_debian10') {
-                        env.navitia_packages_type = "navitia-debian10-packages.zip"
+                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian10-packages.zip"
                     } else if (env.PLATFORM == 'artemis_debian8') {
-                        env.navitia_packages_type = "navitia-debian8-packages.zip"
+                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
                     } else {
                         echo 'selected platform not available'
                     }
+                    echo "With ${PLATFORM}, ${navitia_packages_type} is selected"
                 }
             }
         }
