@@ -48,16 +48,18 @@ pipeline {
         }
         stage('Love') {
             steps {
-                if ($(PLATFORM) == "dev_debian8") {
-                    sh '''
-                        echo "LOVE"
-                        echo "${PLATFORM}"
-                    '''
-                } else {
-                    sh '''
-                        echo "KIKOU"
-                        echo "${PLATFORM}"
-                    '''
+                script {
+                    if ($(PLATFORM) == "dev_debian8") {
+                        sh '''
+                            echo "LOVE"
+                            echo "${PLATFORM}"
+                        '''
+                    } else {
+                        sh '''
+                            echo "KIKOU"
+                            echo "${PLATFORM}"
+                        '''
+                    }
                 }
             }
         }
