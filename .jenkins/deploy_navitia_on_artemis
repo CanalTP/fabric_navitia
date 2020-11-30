@@ -21,16 +21,16 @@ pipeline {
                         } else {
                             echo 'selected platform not available'
                         }
+                        sh '''
+                            echo "remove old artifacts"
+                            echo ${navitia_packages_type}
+                            python2.7 scripts/retreive_debian_packages_from_github.py -r ${navitia_packages_type}
+                            echo "retreive artifacts"
+                            python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a ${navitia_packages_type} -o "."
+                            echo "unzip artifacts"
+                            python2.7 scripts/retreive_debian_packages_from_github.py -z ${navitia_packages_type}
+                        '''
                     }
-                    sh '''
-                        echo "remove old artifacts"
-                        echo ${navitia_packages_type}
-                        python2.7 scripts/retreive_debian_packages_from_github.py -r ${navitia_packages_type}
-                        echo "retreive artifacts"
-                        python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev" -a ${navitia_packages_type} -o "."
-                        echo "unzip artifacts"
-                        python2.7 scripts/retreive_debian_packages_from_github.py -z ${navitia_packages_type}
-                    '''
                 }
             }
         }
