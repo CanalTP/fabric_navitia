@@ -107,9 +107,7 @@ class GithubArtifactsReceiver:
         # the artifact that match
         zip_url = ""
         for artifact in resp["artifacts"]:
-            print("KIKOU %s", self.artifacts_name.split('.'))
-            print("KIKOU %s", artifact['name'])
-            if artifact["name"] == self.artifacts_name.split('.'):
+            if artifact["name"] == self.artifacts_name.split('.')[0]:
                 artifact_info = artifact
                 zip_url = self.url_header + artifact_info["archive_download_url"].replace('https://', '')
                 break
