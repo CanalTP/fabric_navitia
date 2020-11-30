@@ -49,10 +49,16 @@ pipeline {
                 '''
             }
         }
-        stage('Run deployment') {
+        stage('Run deployment 1') {
             steps {
                 sh '''
                     echo "${params.PLATFORM}"
+                '''
+            }
+        }
+        stage('Run deployment') {
+            steps {
+                sh '''
                     PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis upgrade_version
                     PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis update_all_configurations:restart=false
                 '''
