@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'PLATFORM', defaultValue: 'dev_debian8', description: 'the platform to deploy Navitia')
+    }
     stages {
         stage('Install requirement to retreive Github artifacts') {
             steps {
@@ -49,6 +52,7 @@ pipeline {
         stage('Run deployment') {
             steps {
                 sh '''
+                    echo "${params.PLATFORM}"
                     PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis upgrade_version
                     PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis update_all_configurations:restart=false
                 '''
