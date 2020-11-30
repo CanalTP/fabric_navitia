@@ -47,9 +47,9 @@ import glob
 import argparse
 import zipfile
 
-DEFAULT_WORKFLOW_NAME = "Build Navitia Packages For Dev"
+DEFAULT_WORKFLOW_NAME = "Build Navitia Packages For Dev Multi Distributions "
 DEFAULT_OUTPUT_PATH = "."
-DEFAULT_ARTIFACTS_NAME = "artifacts.zip"
+DEFAULT_ARTIFACTS_NAME = "navitia-debian8-packages.zip"
 
 class GithubArtifactsReceiver:
     def __init__(self, github_user, github_token, workflow_name=DEFAULT_WORKFLOW_NAME, artifacts_name=DEFAULT_ARTIFACTS_NAME, artifacts_output_path=DEFAULT_OUTPUT_PATH):
@@ -164,7 +164,8 @@ def uncompress_artifacts(path_to_artifacts):
     """ uncompress the downloaded artifacts """
     zip = zipfile.ZipFile(path_to_artifacts)
     zip.extractall()
-    zip = zipfile.ZipFile('navitia_debian_packages.zip')
+    zip.close()
+    zip = zipfile.ZipFile(path_to_artifacts.replace('-', '_'))
     zip.extractall()
     zip.close()
 
@@ -173,10 +174,10 @@ def remove_all_artifacts(path_to_artifacts):
     """ remove old artifacts """
     for f in glob.glob("navitia-*"):
         os.remove(f)
-    if os.path.isfile("navitia_debian_packages.zip"):
-        os.remove("navitia_debian_packages.zip")
     if os.path.isfile(path_to_artifacts):
         os.remove(path_to_artifacts)
+    if os.path.isfile(path_to_artifacts.replace('-', '_')):
+        os.remove(path_to_artifacts.replace('-', '_'))
 
 
 def config_logger():
@@ -220,10 +221,10 @@ def main():
 
     if args.remove_artifacts:
         logger.info("remove old artifacts")
-        remove_all_artifacts(DEFAULT_ARTIFACTS_NAME)
+        remove_all_artifacts(args.remove_artifacts)
     elif args.uncompress_artifacts:
         logger.info("uncompress the downloaded artifacts")
-        uncompress_artifacts(DEFAULT_ARTIFACTS_NAME)
+        uncompress_artifacts(args.uncompress_artifacts)
         logger.info("you can have now acces to navitia-*.deb packages")
     else:
         artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir)
