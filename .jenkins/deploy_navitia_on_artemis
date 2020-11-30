@@ -46,26 +46,28 @@ pipeline {
                 '''
             }
         }
-        stage('Love') {
-            when {
-                expression { ${PLATFORM} == 'dev_debian8' }
-            }
+        job('example-1') {
             steps {
-                sh '''
-                    echo "LOVE"
-                    echo "${PLATFORM}"
-                '''
+                conditionalSteps {
+                    condition {
+                        stringsMatch('${PLATFORM}', 'dev_debian8', true)
+                    }
+                    steps {
+                        shell("echo 'just one step'")
+                    }
+                }
             }
         }
-        stage('kikou') {
-            when {
-                expression { ${PLATFORM} == 'dev_debian10' }
-            }
+        job('example-1') {
             steps {
-                sh '''
-                    echo "KIKOU"
-                    echo "${PLATFORM}"
-                '''
+                conditionalSteps {
+                    condition {
+                        stringsMatch('${PLATFORM}', 'dev_debian10', true)
+                    }
+                    steps {
+                        shell("echo 'just one step debian 10'")
+                    }
+                }
             }
         }
         stage('Run deployment') {
