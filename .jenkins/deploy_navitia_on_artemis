@@ -8,7 +8,7 @@ pipeline {
                 '''
             }
         }
-        stage('packages name') {
+        stage('Debian packages name') {
             steps {
                 script {
                     if (env.PLATFORM == 'dev_debian8') {
@@ -20,7 +20,7 @@ pipeline {
                     } else {
                         echo 'selected platform not available'
                     }
-                    echo "With" ${PLATFORM}"," ${navitia_packages_type} "is selected"
+                    echo "With" ${PLATFORM}"," ${NAVITIA_DEBIAN_PACKAGES} "is selected"
                 }
             }
         }
@@ -28,12 +28,12 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                         sh '''
-                            echo "remove old artifacts from" ${navitia_packages_type}
-                            python2.7 scripts/retreive_debian_packages_from_github.py -r ${navitia_packages_type}
+                            echo "remove old artifacts from" ${NAVITIA_DEBIAN_PACKAGES}
+                            python2.7 scripts/retreive_debian_packages_from_github.py -r ${NAVITIA_DEBIAN_PACKAGES}
                             echo "retreive debian packages for navitia"
-                            python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev Multi Distributions" -a ${navitia_packages_type} -o "."
-                            echo "unzip" ${navitia_packages_type}
-                            python2.7 scripts/retreive_debian_packages_from_github.py -z ${navitia_packages_type}
+                            python2.7 scripts/retreive_debian_packages_from_github.py -u jenkins-kisio-core -t $GITHUB_TOKEN -w "Build Navitia Packages For Dev Multi Distributions" -a ${NAVITIA_DEBIAN_PACKAGES} -o "."
+                            echo "unzip" ${NAVITIA_DEBIAN_PACKAGES}
+                            python2.7 scripts/retreive_debian_packages_from_github.py -z ${NAVITIA_DEBIAN_PACKAGES}
                         '''
                 }
             }
