@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+                image 'python:3.9.1'
+                args '--user root'
+            }
+    }
     stages {
         stage('Debian packages name') {
             steps {
@@ -33,26 +38,10 @@ pipeline {
                 }
             }
         }
-        stage('Create virualenv for github_artifacts script') {
-            steps {
-                sh '''
-                    ls -al
-                    rm -rf github_artifact_venv
-                    mkdir github_artifact_venv
-                    sudo apt install virtualenv
-                    virtualenv github_artifact_venv -p python3.9.1
-                    ls -al
-                '''
-            }
-        }
         stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
-                    ls -al
-                    source github_artifact_venv/bin/activate
                     pip install -r core_team_ci_tools/github_artifacts/requirements.txt
-                    deactivate
-                    ls -al
                 '''
             }
         }
@@ -60,11 +49,8 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
-                        ls -al
-                        source github_artifact_venv/bin/activate
                         echo "retreive debian packages for github_artifacts (workflow : Build Navitia Packages For Dev Multi Distributions)"
                         python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
-                        deactivate
                     '''
                 }
             }
@@ -72,18 +58,15 @@ pipeline {
         stage('unzip navitia debian packages bundle') {
             steps {
                 sh '''
-                    ls -al
                     # unzip github artifacts (${NAVITIA_DEBIAN_PACKAGES})
                     echo "Unzip artifacts"
                     unzip -q ${NAVITIA_DEBIAN_PACKAGES}
                     # unzip artifacts (navitia_debian_packages.zip)
                     echo "Unzip .deb"
                     unzip -q navitia_debian* 2>&1
-                    ls -al
                     # suppress *.zip
                     echo "suppress useless zip"
                     rm -f *.zip
-                    ls -al
                 '''
             }
         }
