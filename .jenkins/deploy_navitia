@@ -50,7 +50,7 @@ pipeline {
         stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
-                    pip install -r core_team_ci_tools/github_artifacts/requirements.txt
+                    pip3 install -r core_team_ci_tools/github_artifacts/requirements.txt
                 '''
             }
         }
@@ -92,10 +92,10 @@ pipeline {
                 sh '''
                     rm -rf venv/
                     mkdir venv
-                    pip install virtualenv
+                    pip3 install virtualenv
                     virtualenv venv -p python2
                     . venv/bin/activate
-                    pip install -r requirements.txt --exists-action w
+                    pip3 install -r requirements.txt --exists-action w
                 '''
             }
         }
