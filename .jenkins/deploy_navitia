@@ -93,7 +93,7 @@ pipeline {
                     rm -rf venv/
                     mkdir venv
                     pip3 install virtualenv
-                    virtualenv venv -p python2
+                    virtualenv venv -p python2.7
                     . venv/bin/activate
                     pip3 install -r requirements.txt --exists-action w
                 '''
