@@ -58,7 +58,7 @@ pipeline {
                     ls -al
                     # unzip github artifacts (${NAVITIA_DEBIAN_PACKAGES})
                     echo "Unzip artifacts"
-                    unzip -q artifacts.zip
+                    unzip -q ${NAVITIA_DEBIAN_PACKAGES}
                     # unzip artifacts (navitia_debian_packages.zip)
                     echo "Unzip .deb"
                     unzip -q navitia_debian* 2>&1
