@@ -98,7 +98,7 @@ pipeline {
                     mkdir venv
                     pip install virtualenv
                     virtualenv venv -p python2
-                    source venv/bin/activate
+                    . venv/bin/activate
                     pip install -r requirements.txt --exists-action w
                     deactivate
                 '''
@@ -107,7 +107,7 @@ pipeline {
         stage('Run deployment') {
             steps {
                 script {
-                    sh 'source venv/bin/activate'
+                    sh '. venv/bin/activate'
                     if (env.PLATFORM == 'dev_debian8') {
                         echo 'deploy on dev - debian 8 platform'
                         sh '''
