@@ -10,6 +10,7 @@ pipeline {
             steps {
                 sh '''
                     echo "remove old debian packages from" ${NAVITIA_DEBIAN_PACKAGES}
+                    apt update
                     apt install curl git python-pip 
                 '''
             }
