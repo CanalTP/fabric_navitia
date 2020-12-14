@@ -6,12 +6,12 @@ pipeline {
         }
     }
     stages {
-        stage('Install packages') {
+        stage('Install extra packages') {
             steps {
                 sh '''
-                    echo "remove old debian packages from" ${NAVITIA_DEBIAN_PACKAGES}
+                    echo "install extra packages"
                     apt update
-                    apt install -y curl git python3-pip unzip 
+                    apt install -y curl git python3-pip unzip python2 
                 '''
             }
         }
