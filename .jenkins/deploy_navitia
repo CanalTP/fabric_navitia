@@ -32,9 +32,9 @@ pipeline {
         }
         stage('Retreive core_team_ci_tools') {
             steps {
-                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'CREDENTIAL')]) {
+                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     sh 'rm -rf core_team_ci_tools && mkdir -p core_team_ci_tools'
-                    sh ' git clone https://jenkins-kisio-core:$CREDENTIAL@github.com/CanalTP/core_team_ci_tools.git'
+                    sh ' git clone https://jenkins-kisio-core:$GITHUB_TOKEN@github.com/CanalTP/core_team_ci_tools.git'
                 }
             }
         }
@@ -72,9 +72,9 @@ pipeline {
         }
         stage('Retreive deployment configuration') {
             steps {
-                sh 'rm -rf navitia_deployment_conf && mkdir -p navitia_deployment_conf' 
-                dir('navitia_deployment_conf') {
-                    git credentialsId: 'jenkins-core-ssh', url: 'git@github.com:CanalTP/navitia_deployment_conf.git'
+                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
+                    sh 'rm -rf navitia_deployment_conf && mkdir -p navitia_deployment_conf' 
+                    sh ' git clone https://jenkins-kisio-core:$GITHUB_TOKEN@github.com/CanalTP/navitia_deployment_conf.git'
                 }
             }
         }
