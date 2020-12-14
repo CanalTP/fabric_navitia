@@ -5,7 +5,7 @@ pipeline {
             args '--user root'
         }
     }
-    stage('Remove old navitia debian packages') {
+    stage('Install packages') {
         steps {
             sh '''
                 echo "remove old debian packages from" ${NAVITIA_DEBIAN_PACKAGES}
