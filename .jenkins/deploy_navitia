@@ -5,6 +5,14 @@ pipeline {
             args '--user root'
         }
     }
+    stage('Remove old navitia debian packages') {
+        steps {
+            sh '''
+                echo "remove old debian packages from" ${NAVITIA_DEBIAN_PACKAGES}
+                apt install curl git python-pip 
+            '''
+        }
+    }
     stages {
         stage('Debian packages name') {
             steps {
