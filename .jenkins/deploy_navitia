@@ -34,7 +34,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'CREDENTIAL')]) {
                     sh 'rm -rf core_team_ci_tools && mkdir -p core_team_ci_tools'
-                    sh ' git clone https://jenkins-kisio-core:$CREDENTIAL@github.com:CanalTP/core_team_ci_tools.git'
+                    sh ' git clone https://jenkins-kisio-core:$CREDENTIAL@github.com/CanalTP/core_team_ci_tools.git'
                 }
             }
         }
