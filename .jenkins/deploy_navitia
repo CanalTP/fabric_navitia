@@ -81,6 +81,11 @@ pipeline {
         stage('Install requirement for fabric deployment') {
             steps {
                 sh '''
+                    rm -rf venv/
+                    mkdir venv
+                    pip install virtualenv
+                    virtualenv venv -p python2
+                    . venv/bin/activate
                     pip install -r requirements.txt --exists-action w
                 '''
             }
