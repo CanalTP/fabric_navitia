@@ -39,7 +39,7 @@ pipeline {
                     ls -al
                     rm -rf github_artifact_venv
                     mkdir github_artifact_venv
-                    pip install virtualenv
+                    sudo apt install virtualenv
                     virtualenv github_artifact_venv -p python3.9.1
                     ls -al
                 '''
