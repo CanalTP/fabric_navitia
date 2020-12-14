@@ -37,7 +37,7 @@ pipeline {
             steps {
                 sh '''
                     ls -al
-                    pip install -r core_team_ci_tools/requirements.txt
+                    pip install -r core_team_ci_tools/github_artifacts/requirements.txt
                 '''
             }
         }
