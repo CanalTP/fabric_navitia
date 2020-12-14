@@ -1,10 +1,5 @@
 pipeline {
-    agent any {
-        docker {
-            image 'python:3.9.1'
-            args '--user root'
-        }
-    }
+    agent any
     stages {
         stage('Debian packages name') {
             steps {
@@ -40,20 +35,24 @@ pipeline {
         }
         stage('Install requirement to retreive Github artifacts') {
             steps {
-                sh '''
-                    ls -al
-                    pip install -r core_team_ci_tools/github_artifacts/requirements.txt
-                '''
+                withEnv(["HOME=${env.WORKSPACE}"]) {
+                    sh '''
+                        ls -al
+                        pip install -r core_team_ci_tools/github_artifacts/requirements.txt
+                    '''
+                }
             }
         }
         stage('process navitia debian packages') {
             steps {
-                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
-                    sh '''
-                        ls -al
-                        echo "retreive debian packages for github_artifacts (workflow : Build Navitia Packages For Dev Multi Distributions)"
-                        python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
-                    '''
+                withEnv(["HOME=${env.WORKSPACE}"]) {
+                    withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
+                        sh '''
+                            ls -al
+                            echo "retreive debian packages for github_artifacts (workflow : Build Navitia Packages For Dev Multi Distributions)"
+                            python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
+                        '''
+                    }
                 }
             }
         }
@@ -85,30 +84,34 @@ pipeline {
         }
         stage('Install requirement for fabric deployment') {
             steps {
-                sh '''
-                    pip install -r requirements.txt --exists-action w
-                '''
+                withEnv(["HOME=${env.WORKSPACE}"]) {
+                    sh '''
+                        pip install -r requirements.txt --exists-action w
+                    '''
+                }
             }
         }
         stage('Run deployment') {
             steps {
-                script {
-                    if (env.PLATFORM == 'dev_debian8') {
-                        echo 'deploy on dev - debian 8 platform'
-                        sh '''
-                            PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:dev upgrade_all:check_version=False
-                        '''
-                    } else if (env.PLATFORM == 'dev_debian10') {
-                        echo 'deploy on dev - debian 10 platform'
-                        echo 'Not implemented yet !!!!!'
-                    } else if (env.PLATFORM == 'artemis_debian8') {
-                        echo 'deploy on artemis - debian 8 platform'
-                        sh '''
-                            PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis upgrade_version
-                            PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis update_all_configurations:restart=false
-                        '''
-                    } else {
-                        echo 'platform not available'
+                withEnv(["HOME=${env.WORKSPACE}"]) {
+                    script {
+                        if (env.PLATFORM == 'dev_debian8') {
+                            echo 'deploy on dev - debian 8 platform'
+                            sh '''
+                                PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:dev upgrade_all:check_version=False
+                            '''
+                        } else if (env.PLATFORM == 'dev_debian10') {
+                            echo 'deploy on dev - debian 10 platform'
+                            echo 'Not implemented yet !!!!!'
+                        } else if (env.PLATFORM == 'artemis_debian8') {
+                            echo 'deploy on artemis - debian 8 platform'
+                            sh '''
+                                PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis upgrade_version
+                                PYTHONPATH=navitia_deployment_conf/ python -u -m fabric use:artemis update_all_configurations:restart=false
+                            '''
+                        } else {
+                            echo 'platform not available'
+                        }
                     }
                 }
             }
