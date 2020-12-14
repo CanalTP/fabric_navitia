@@ -11,7 +11,11 @@ pipeline {
                 sh '''
                     echo "install extra packages"
                     apt update
-                    apt install -y curl git python3-pip unzip python2 
+                    apt install -y curl git python3-pip unzip 
+                    sudo apt-get install -y python2-dev
+                    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+                    sudo python2 get-pip.py
+                    rm get-pip.py
                 '''
             }
         }
@@ -92,16 +96,18 @@ pipeline {
                 sh '''
                     rm -rf venv/
                     mkdir venv
-                    pip3 install virtualenv
-                    virtualenv venv -p python2.7
-                    . venv/bin/activate
-                    pip3 install -r requirements.txt --exists-action w
+                    pip install virtualenv
+                    virtualenv venv -p python2
+                    source venv/bin/activate
+                    pip install -r requirements.txt --exists-action w
+                    deactivate
                 '''
             }
         }
         stage('Run deployment') {
             steps {
                 script {
+                    sh 'source venv/bin/activate'
                     if (env.PLATFORM == 'dev_debian8') {
                         echo 'deploy on dev - debian 8 platform'
                         sh '''
@@ -120,6 +126,7 @@ pipeline {
                     } else {
                         echo 'platform not available'
                     }
+                    sh 'deactivate'
                 }
             }
         }
