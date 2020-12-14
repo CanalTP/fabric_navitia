@@ -108,6 +108,7 @@ pipeline {
             steps {
                 script {
                     sh '. venv/bin/activate'
+                    sh 'ls -al'
                     if (env.PLATFORM == 'dev_debian8') {
                         echo 'deploy on dev - debian 8 platform'
                         sh '''
