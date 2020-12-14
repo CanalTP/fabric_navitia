@@ -12,9 +12,9 @@ pipeline {
                     echo "install extra packages"
                     apt update
                     apt install -y curl git python3-pip unzip 
-                    sudo apt-get install -y python2-dev
+                    apt-get install -y python2-dev
                     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-                    sudo python2 get-pip.py
+                    python2 get-pip.py
                     rm get-pip.py
                 '''
             }
