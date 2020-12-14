@@ -91,7 +91,7 @@ pipeline {
                     } else if (env.PLATFORM == 'dev_debian10') {
                         echo 'deploy on dev - debian 10 platform'
                         echo 'Not implemented yet !!!!!'
-                        exit 1
+                        sh 'exit 1'
                     } else if (env.PLATFORM == 'artemis_debian8') {
                         echo 'deploy on artemis - debian 8 platform'
                         sh '''
