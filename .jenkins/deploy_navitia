@@ -32,9 +32,9 @@ pipeline {
         }
         stage('Retreive core_team_ci_tools') {
             steps {
-                sh 'rm -rf core_team_ci_tools && mkdir -p core_team_ci_tools' 
-                dir('core_team_ci_tools') {
-                    git credentialsId: 'jenkins-core-ssh', url: 'git@github.com:CanalTP/core_team_ci_tools.git'
+                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
+                    sh 'rm -rf core_team_ci_tools && mkdir -p core_team_ci_tools'
+                    sh ' git clone https://jenkins-kisio-core:jenkins-core-github-credentials@github.com:CanalTP/core_team_ci_tools.git'
                 }
             }
         }
