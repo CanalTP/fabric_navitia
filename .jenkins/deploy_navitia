@@ -112,7 +112,7 @@ pipeline {
                     if (env.PLATFORM == 'dev_debian8') {
                         echo 'deploy on dev - debian 8 platform'
                         sh '''
-                            PYTHONPATH=navitia_deployment_conf/ python2.7 -u -m fabric use:dev upgrade_all:check_version=False
+                            PYTHONPATH=navitia_deployment_conf/ python2 -u -m fabric use:dev upgrade_all:check_version=False
                         '''
                     } else if (env.PLATFORM == 'dev_debian10') {
                         echo 'deploy on dev - debian 10 platform'
@@ -121,8 +121,8 @@ pipeline {
                     } else if (env.PLATFORM == 'artemis_debian8') {
                         echo 'deploy on artemis - debian 8 platform'
                         sh '''
-                            PYTHONPATH=navitia_deployment_conf/ python2.7 -u -m fabric use:artemis upgrade_version
-                            PYTHONPATH=navitia_deployment_conf/ python2.7 -u -m fabric use:artemis update_all_configurations:restart=false
+                            PYTHONPATH=navitia_deployment_conf/ python2 -u -m fabric use:artemis upgrade_version
+                            PYTHONPATH=navitia_deployment_conf/ python2 -u -m fabric use:artemis update_all_configurations:restart=false
                         '''
                     } else {
                         echo 'platform not available'
