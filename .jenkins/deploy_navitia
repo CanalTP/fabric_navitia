@@ -39,7 +39,8 @@ pipeline {
             steps {
                 sh '''
                     echo "remove old debian packages from" ${NAVITIA_DEBIAN_PACKAGES}
-                    rm -rf navitia-*
+                    rm -f navitia-*
+                    rm -f *.zip
                 '''
             }
         }
