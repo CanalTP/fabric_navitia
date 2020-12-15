@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu'
+            image 'ubuntu:18.04'
             args '--user root'
         }
     }
@@ -11,11 +11,7 @@ pipeline {
                 sh '''
                     echo "install extra packages"
                     apt update
-                    apt install -y curl git python3-pip unzip 
-                    apt-get install -y python2-dev
-                    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-                    python2 get-pip.py
-                    rm get-pip.py
+                    apt install -y curl git python python-pip
                 '''
             }
         }
@@ -55,7 +51,7 @@ pipeline {
         stage('Install requirement to retreive Github artifacts') {
             steps {
                 sh '''
-                    pip3 install -r core_team_ci_tools/github_artifacts/requirements.txt
+                    pip install -r core_team_ci_tools/github_artifacts/requirements.txt
                 '''
             }
         }
@@ -64,7 +60,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                         echo "retreive debian packages for github_artifacts (workflow : Build Navitia Packages For Dev Multi Distributions)"
-                        python3 core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
+                        python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
                     '''
                 }
             }
@@ -95,21 +91,13 @@ pipeline {
         stage('Install requirement for fabric deployment') {
             steps {
                 sh '''
-                    rm -rf venv/
-                    mkdir venv
-                    pip install virtualenv
-                    virtualenv venv -p python2
-                    . venv/bin/activate
                     pip install -r requirements.txt --exists-action w
-                    deactivate
                 '''
             }
         }
         stage('Run deployment') {
             steps {
                 script {
-                    sh '. venv/bin/activate'
-                    sh 'ls -al'
                     if (env.PLATFORM == 'dev_debian8') {
                         echo 'deploy on dev - debian 8 platform'
                         sh '''
@@ -128,7 +116,6 @@ pipeline {
                     } else {
                         echo 'platform not available'
                     }
-                    sh 'deactivate'
                 }
             }
         }
