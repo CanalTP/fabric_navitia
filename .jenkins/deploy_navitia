@@ -9,7 +9,6 @@ pipeline {
         stage('Install extra packages') {
             steps {
                 sh '''
-                    echo $PLATFORM
                     echo "install extra packages"
                     apt update
                     apt install -y curl git unzip python python-pip
