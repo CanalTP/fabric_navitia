@@ -9,6 +9,7 @@ pipeline {
         stage('Install extra packages') {
             steps {
                 sh '''
+                    echo $PLATFORM
                     echo "install extra packages"
                     apt update
                     apt install -y curl git unzip python python-pip
@@ -127,7 +128,7 @@ pipeline {
         failure { 
             withCredentials([string(credentialsId: 'navitia_core_team_slack_chan', variable: 'NAVITIA_CORE_TEAM_SLACK_CHAN')]) {
                 sh '''
-                    curl -X POST -H 'Content-type: application/json' --data '{"text":":warning: Deploy Navitia on Artemis is failed"}' $NAVITIA_CORE_TEAM_SLACK_CHAN
+                    curl -X POST -H 'Content-type: application/json' --data '{"text":":warning: Deploy Navitia on $PLATFORM is failed"}' $NAVITIA_CORE_TEAM_SLACK_CHAN
                 '''
             }
         }
