@@ -29,11 +29,12 @@ pipeline {
                             echo 'selected platform not available'
                         }
                     } else {
+                        sh 'echo "By default artemis platform is selected"'
                         env.PLATFORM = "artemis_debian8"
                         env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
                     }
                 }
-                sh 'echo "Platform" ${NAVITIA_DEBIAN_PACKAGES} "selected"'
+                sh 'echo "Platform" ${PLATFORM} "selected"'
                 sh 'echo ${NAVITIA_DEBIAN_PACKAGES} "is selected"'
             }
         }
