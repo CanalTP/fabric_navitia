@@ -18,20 +18,15 @@ pipeline {
         stage('Debian packages name') {
             steps {
                 script {
-                    if (env.PLATFORM) {
-                        if (env.PLATFORM == 'dev_debian8') {
-                            env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
-                        } else if (env.PLATFORM == 'dev_debian10') {
-                            env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian10-packages.zip"
-                        } else if (env.PLATFORM == 'artemis_debian8') {
-                            env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
-                        } else {
-                            echo 'selected platform not available'
-                        }
-                    } else {
-                        sh 'echo "By default artemis platform is selected"'
-                        env.PLATFORM = "artemis_debian8"
+                    if (env.PLATFORM == 'dev_debian8') {
                         env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
+                    } else if (env.PLATFORM == 'dev_debian10') {
+                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian10-packages.zip"
+                    } else if (env.PLATFORM == 'artemis_debian8') {
+                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
+                    } else {
+                        echo 'selected platform not available'
+                        sh 'exit 1'
                     }
                 }
                 sh 'echo "Platform" ${PLATFORM} "selected"'
