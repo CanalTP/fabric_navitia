@@ -18,16 +18,22 @@ pipeline {
         stage('Debian packages name') {
             steps {
                 script {
-                    if (env.PLATFORM == 'dev_debian8') {
-                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
-                    } else if (env.PLATFORM == 'dev_debian10') {
-                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian10-packages.zip"
-                    } else if (env.PLATFORM == 'artemis_debian8') {
-                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
+                    if (env.PLATFORM) {
+                        if (env.PLATFORM == 'dev_debian8') {
+                            env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
+                        } else if (env.PLATFORM == 'dev_debian10') {
+                            env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian10-packages.zip"
+                        } else if (env.PLATFORM == 'artemis_debian8') {
+                            env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
+                        } else {
+                            echo 'selected platform not available'
+                        }
                     } else {
-                        echo 'selected platform not available'
+                        env.PLATFORM = "artemis_debian8"
+                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
                     }
                 }
+                sh 'echo "Platform" ${NAVITIA_DEBIAN_PACKAGES} "selected"'
                 sh 'echo ${NAVITIA_DEBIAN_PACKAGES} "is selected"'
             }
         }
@@ -125,6 +131,13 @@ pipeline {
     post {
         always {
             cleanWs()
+        }
+        failure {
+            withCredentials([string(credentialsId: 'navitia_core_team_slack_chan', variable: 'NAVITIA_CORE_TEAM_SLACK_CHAN')]) {
+                sh '''
+                    curl -X POST -H 'Content-type: application/json' --data '{"text":":warning: Deploy Navitia is failed. See https://jenkins-core.canaltp.fr/job/deploy-navitia/"}' $NAVITIA_CORE_TEAM_SLACK_CHAN
+                '''
+            }
         }
     }
 }
