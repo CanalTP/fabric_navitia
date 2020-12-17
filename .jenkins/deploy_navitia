@@ -5,22 +5,13 @@ pipeline {
             args '--user root'
         }
     }
-     parameters {
-      string(name: 'PLANET', defaultValue: '', description: 'Which planet are we on?')
-      string(name: 'GREETING', defaultValue: 'Hello', description: 'How shall we greet?')
-    }
     triggers {
         parameterizedCron('''
-            */2 * * * * %PLATFORM=artemis_debian8
-            */3 * * * * %PLATFORM=dev_debian8
+            * 1 * * * %PLATFORM=artemis_debian8
+            * 3 * * * %PLATFORM=dev_debian8
         ''')
     }
     stages {
-        stage('Tests') {
-            steps {
-                sh 'echo "Platform" ${PLATFORM} "selected"'
-            }
-        }
         stage('Install extra packages') {
             steps {
                 sh '''
@@ -136,6 +127,14 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        stage('Invoke Artemis job after a deploy on Artemis') {
+            when {
+                expression { env.PLATFORM == 'artemis_debian8' }
+            }
+            steps {
+                build 'Jenkins_conf-Core'
             }
         }
     }
