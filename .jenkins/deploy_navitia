@@ -16,6 +16,11 @@ pipeline {
         ''')
     }
     stages {
+        stage('Tests') {
+            steps {
+                sh 'echo "Platform" ${PLATFORM} "selected"'
+            }
+        }
         stage('Install extra packages') {
             steps {
                 sh '''
