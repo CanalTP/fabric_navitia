@@ -12,111 +12,6 @@ pipeline {
         ''')
     }
     stages {
-        stage('Install extra packages') {
-            steps {
-                sh '''
-                    echo "install extra packages"
-                    apt update
-                    apt install -y curl git unzip python python-pip
-                '''
-            }
-        }
-        stage('Debian packages name') {
-            steps {
-                script {
-                    if (env.PLATFORM == 'dev_debian8') {
-                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
-                    } else if (env.PLATFORM == 'dev_debian10') {
-                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian10-packages.zip"
-                    } else if (env.PLATFORM == 'artemis_debian8') {
-                        env.NAVITIA_DEBIAN_PACKAGES = "navitia-debian8-packages.zip"
-                    } else {
-                        echo 'selected platform not available'
-                        sh 'exit 1'
-                    }
-                }
-                sh 'echo "Platform" ${PLATFORM} "selected"'
-                sh 'echo ${NAVITIA_DEBIAN_PACKAGES} "is selected"'
-            }
-        }
-        stage('Retreive core_team_ci_tools') {
-            steps {
-                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
-                    sh 'rm -rf core_team_ci_tools && mkdir -p core_team_ci_tools'
-                    sh ' git clone https://jenkins-kisio-core:$GITHUB_TOKEN@github.com/CanalTP/core_team_ci_tools.git'
-                }
-            }
-        }
-        stage('Install requirement to retreive Github artifacts') {
-            steps {
-                sh '''
-                    pip install -r core_team_ci_tools/github_artifacts/requirements.txt
-                '''
-            }
-        }
-        stage('process navitia debian packages') {
-            steps {
-                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
-                    sh '''
-                        echo "retreive debian packages for github_artifacts (workflow : Build Navitia Packages For Dev Multi Distributions)"
-                        python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
-                    '''
-                }
-            }
-        }
-        stage('unzip navitia debian packages bundle') {
-            steps {
-                sh '''
-                    # unzip github artifacts (${NAVITIA_DEBIAN_PACKAGES})
-                    echo "Unzip artifacts"
-                    unzip -q ${NAVITIA_DEBIAN_PACKAGES}
-                    # unzip artifacts (navitia_debian_packages.zip)
-                    echo "Unzip .deb"
-                    unzip -q navitia_debian* 2>&1
-                '''
-            }
-        }
-        stage('Retreive deployment configuration') {
-            steps {
-                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
-                    sh 'rm -rf navitia_deployment_conf && mkdir -p navitia_deployment_conf' 
-                    sh ' git clone https://jenkins-kisio-core:$GITHUB_TOKEN@github.com/CanalTP/navitia_deployment_conf.git'
-                }
-            }
-        }
-        stage('Install requirement for fabric deployment') {
-            steps {
-                sh '''
-                    pip install -r requirements.txt --exists-action w
-                '''
-            }
-        }
-        stage('Run deployment') {
-            steps {
-                sshagent(credentials : ['jenkins-core-ssh']) {
-                    script {
-                        if (env.PLATFORM == 'dev_debian8') {
-                            echo 'deploy on dev - debian 8 platform'
-                            sh '''
-                                PYTHONPATH=navitia_deployment_conf/ python2 -u -m fabric use:dev upgrade_all:check_version=False
-                            '''
-                        } else if (env.PLATFORM == 'dev_debian10') {
-                            echo 'deploy on dev - debian 10 platform'
-                            echo 'Not implemented yet !!!!!'
-                            sh 'exit 1'
-                        } else if (env.PLATFORM == 'artemis_debian8') {
-                            echo 'deploy on artemis - debian 8 platform'
-                            sh '''
-                                PYTHONPATH=navitia_deployment_conf/ python2 -u -m fabric use:artemis upgrade_version
-                                PYTHONPATH=navitia_deployment_conf/ python2 -u -m fabric use:artemis update_all_configurations:restart=false
-                            '''
-                        } else {
-                            echo 'platform not available'
-                        }
-                    }
-                }
-            }
-        }
         stage('Invoke Artemis job after a deploy on Artemis') {
             when {
                 expression { env.PLATFORM == 'artemis_debian8' }
@@ -133,8 +28,8 @@ pipeline {
         cleanup {
             sh '''
                 echo "remove downloaded artifacts"
-                rm -f navitia-*
-                rm -f *.zip
+                rm -rf navitia-*
+                rm -rf *.zip
             '''
         }
         failure {
