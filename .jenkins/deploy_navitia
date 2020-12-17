@@ -12,12 +12,21 @@ pipeline {
         ''')
     }
     stages {
+        stage('Install extra packages') {
+            steps {
+                sh '''
+                    echo "install extra packages"
+                    apt update
+                    apt install -y curl git unzip python python-pip
+                '''
+            }
+        }
         stage('Invoke Artemis job after a deploy on Artemis') {
             when {
                 expression { env.PLATFORM == 'artemis_debian8' }
             }
             steps {
-                build 'Jenkins_conf-Core'
+                build 'artemis'
             }
         }
     }
