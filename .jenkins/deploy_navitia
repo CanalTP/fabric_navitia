@@ -39,15 +39,6 @@ pipeline {
                 sh 'echo ${NAVITIA_DEBIAN_PACKAGES} "is selected"'
             }
         }
-        stage('Remove old navitia debian packages') {
-            steps {
-                sh '''
-                    echo "remove old debian packages from" ${NAVITIA_DEBIAN_PACKAGES}
-                    rm -f navitia-*
-                    rm -f *.zip
-                '''
-            }
-        }
         stage('Retreive core_team_ci_tools') {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
@@ -82,9 +73,6 @@ pipeline {
                     # unzip artifacts (navitia_debian_packages.zip)
                     echo "Unzip .deb"
                     unzip -q navitia_debian* 2>&1
-                    # suppress *.zip
-                    echo "suppress useless zip"
-                    rm -f *.zip
                 '''
             }
         }
@@ -141,6 +129,13 @@ pipeline {
     post {
         always {
             cleanWs()
+        }
+        cleanup {
+            sh '''
+                echo "remove downloaded artifacts"
+                rm -f navitia-*
+                rm -f *.zip
+            '''
         }
         failure {
             withCredentials([string(credentialsId: 'navitia_core_team_slack_chan', variable: 'NAVITIA_CORE_TEAM_SLACK_CHAN')]) {
