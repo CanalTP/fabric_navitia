@@ -75,7 +75,5 @@ pipeline {
                 rm -rf *.zip
             '''
         }
-        failure {
-        }
     }
 }
