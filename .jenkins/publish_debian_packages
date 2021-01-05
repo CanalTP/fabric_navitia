@@ -1,0 +1,86 @@
+pipeline {
+    agent {
+        docker {
+            image 'ubuntu:18.04'
+            args '--user root'
+        }
+    }
+    stages {
+        stage('Install extra packages') {
+            steps {
+                sh '''
+                    echo "install extra packages"
+                    apt update
+                    apt install -y curl git unzip python python-pip
+                '''
+            }
+        }
+        stage('Retreive core_team_ci_tools') {
+            steps {
+                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
+                    sh 'rm -rf core_team_ci_tools && mkdir -p core_team_ci_tools'
+                    sh ' git clone https://jenkins-kisio-core:$GITHUB_TOKEN@github.com/CanalTP/core_team_ci_tools.git'
+                }
+            }
+        }
+        stage('Install requirement to retreive Github artifacts') {
+            steps {
+                sh '''
+                    pip install -r core_team_ci_tools/github_artifacts/requirements.txt
+                '''
+            }
+        }
+        stage('process navitia debian packages') {
+            steps {
+                withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        echo "retreive debian packages for github_artifacts (workflow : Build Navitia Packages For Dev Multi Distributions)"
+                        python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
+                    '''
+                }
+            }
+        }
+        stage('unzip navitia debian packages bundle') {
+            steps {
+                sh '''
+                    # unzip github artifacts (${NAVITIA_DEBIAN_PACKAGES})
+                    echo "Unzip artifacts"
+                    unzip -q ${NAVITIA_DEBIAN_PACKAGES}
+                    # unzip artifacts (navitia_debian_packages.zip)
+                    echo "Unzip .deb"
+                    unzip -q navitia_debian* 2>&1
+                '''
+            }
+        }
+        stage ('Deploy') {
+            steps {
+                ftpPublisher alwaysPublishFromMaster: true,
+                    continueOnError: false,
+                    failOnError: false,
+                    masterNodeName: '',
+                    paramPublish: null,
+                    publishers: [[configName: 'External Host', transfers: [[asciiMode: false, cleanRemote: true, excludes: '', flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: 'public', sourceFiles: 'public/*,public/**/*']], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false]]
+            }
+        }
+
+    }
+    post {
+        always {
+            cleanWs()
+        }
+        cleanup {
+            sh '''
+                echo "remove downloaded artifacts"
+                rm -rf navitia-*
+                rm -rf *.zip
+            '''
+        }
+        failure {
+            withCredentials([string(credentialsId: 'navitia_core_team_slack_chan', variable: 'NAVITIA_CORE_TEAM_SLACK_CHAN')]) {
+                sh '''
+                    curl -X POST -H 'Content-type: application/json' --data '{"text":":warning: Deploy Navitia is failed. See https://jenkins-core.canaltp.fr/job/deploy-navitia/"}' $NAVITIA_CORE_TEAM_SLACK_CHAN
+                '''
+            }
+        }
+    }
+}
