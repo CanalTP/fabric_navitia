@@ -35,7 +35,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'jenkins-core-github-access-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                         echo "retreive debian packages for github_artifacts (workflow : Build Navitia Packages For Dev Multi Distributions)"
-                        python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a ${NAVITIA_DEBIAN_PACKAGES}
+                        python core_team_ci_tools/github_artifacts/github_artifacts.py -o CanalTP -r navitia -t $GITHUB_TOKEN -w build_navitia_packages_for_dev_multi_distribution.yml -a navitia-debian8-packages.zip
                     '''
                 }
             }
@@ -76,11 +76,6 @@ pipeline {
             '''
         }
         failure {
-            withCredentials([string(credentialsId: 'navitia_core_team_slack_chan', variable: 'NAVITIA_CORE_TEAM_SLACK_CHAN')]) {
-                sh '''
-                    curl -X POST -H 'Content-type: application/json' --data '{"text":":warning: Deploy Navitia is failed. See https://jenkins-core.canaltp.fr/job/deploy-navitia/"}' $NAVITIA_CORE_TEAM_SLACK_CHAN
-                '''
-            }
         }
     }
 }
