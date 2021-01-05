@@ -43,9 +43,9 @@ pipeline {
         stage('unzip navitia debian packages bundle') {
             steps {
                 sh '''
-                    # unzip github artifacts (${NAVITIA_DEBIAN_PACKAGES})
+                    # unzip github artifacts (navitia-debian8-packages.zip)
                     echo "Unzip artifacts"
-                    unzip -q ${NAVITIA_DEBIAN_PACKAGES}
+                    unzip -q navitia-debian8-packages.zip
                     # unzip artifacts (navitia_debian_packages.zip)
                     echo "Unzip .deb"
                     unzip -q navitia_debian* 2>&1
