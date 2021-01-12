@@ -75,6 +75,7 @@ pipeline {
                         if (env.PACKAGES == 'navitia_debian8_packages') {
                             echo 'copy debian 8 pacakges'
                             sh '''
+                                touch kikou.txt
                                 scp -o StrictHostKeyChecking=no navitia-* root@par-vm99:/tmp
                             '''
                         } else if (env.PACKAGES == 'navitia_debian10_packages') {
