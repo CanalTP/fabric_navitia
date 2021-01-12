@@ -74,10 +74,9 @@ pipeline {
                     sshagent(credentials : ['jenkins-core-ssh']) {
                         script {
                             if (env.PACKAGES == 'navitia_debian8_packages') {
-                                echo 'copy debian 8 pacakges'
+                                echo 'copy debian 8 packages'
                                 sh '''
-                                    touch kikou.txt
-                                    scp -o StrictHostKeyChecking=no kikou.* root@par-vm99:/srv/www/debian/repositories/pool/main/n/navitia2
+                                    scp -o StrictHostKeyChecking=no navitia-* $DEBIAN_REPO/navitia2
                                 '''
                             } else if (env.PACKAGES == 'navitia_debian10_packages') {
                                 echo 'copy debian 10 pacakges'
