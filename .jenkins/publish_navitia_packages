@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'ubuntu:18.04'
+            args '--user root'
+        }
+    }
     stages {
         stage('Install extra packages') {
             steps {
